@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux Virtual Surround Sound with PipeWire & HeSuVi | Setup Guide</title>
+    <meta name="description"
+        content="A simple interactive guide to setting up 7.1 virtual surround sound on Linux using PipeWire and HeSuVi HRIRs. Perfect for Linux gaming with spatial audio.">
+    <meta name="keywords"
+        content="linux, pipewire, surround sound, 7.1, hesuvi, hrtf, virtual surround, spatial audio, linux gaming, headphones, atmos, audio guide">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Linux Virtual Surround Sound with PipeWire">
+    <meta property="og:description" content="An interactive guide to enabling spatial audio on Linux.">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="Linux Virtual Surround Sound with PipeWire">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Virtual Surround Sound on Linux with PipeWire</h1>
+            <p style="color: var(--text-muted); font-size: 1.2rem; margin-bottom: var(--space-lg);">
+                Choose your own <del>adventure</del> spatial audio for Linux Gaming!
+            </p>
+        </header>
+
+        <main>
+            <!-- Step 0 -->
+            <div class="step-card">
+                <div class="step-number">0</div>
+                <h2>Prerequisites</h2>
+                <p>Ensure PipeWire and the PulseAudio compatibility layer are installed. This should already be the
+                    default for most modern distros.</p>
+
+                <div class="code-block-wrapper">
+                    <!-- Distro Tabs -->
+                    <div class="distro-tabs">
+                        <button class="tab-btn" data-distro="debian">Debian / Ubuntu</button>
+                        <button class="tab-btn" data-distro="fedora">Fedora</button>
+                        <button class="tab-btn" data-distro="arch">Arch</button>
+                    </div>
+
+                    <button class="copy-btn" data-target="cmd-install">
+                        <span class="material-icons" style="font-size: 16px;">content_copy</span> Copy
+                    </button>
+                    <div class="code-block">
+                        <pre id="cmd-install">sudo apt install pipewire ...</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 1 & 2 -->
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h2>Get Required Files</h2>
+                <p>First, choose and download your HRTF preset (the specific surround sound simulation you want).</p>
+
+                <div style="margin-top: var(--space-md); margin-bottom: var(--space-md);">
+                    <a href="https://airtable.com/appayGNkn3nSuXkaz/shruimhjdSakUPg2m/tbloLjoZKWJDnLtTc" target="_blank"
+                        class="btn-primary">
+                        Visit HRTF Database
+                    </a>
+                </div>
+
+                <!-- HRTF Warning/Instruction -->
+                <div
+                    style="padding: var(--space-sm) var(--space-md); background: rgba(16, 185, 129, 0.1); border-left: 3px solid var(--accent); border-radius: 4px;">
+                    <p style="font-size: 0.9em; color: #047857;">
+                        <strong>Note:</strong> Choose the "Download WAV (HeSuVi)" option on the database page. It will
+                        download as a <code>.zip</code> file.
+                    </p>
+                </div>
+            </div>
+
+
+            <!-- Step 3 -->
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h2>Place Files</h2>
+                <p>Create the necessary directories and move your files into place.</p>
+
+                <!-- Filename Input -->
+                <div style="margin: var(--space-md) 0;">
+                    <label for="hrtf-input" style="color: var(--primary);">Enter downloaded HRTF name (e.g. atmos, dts,
+                        cmss_game)</label>
+                    <input type="text" id="hrtf-input" placeholder="e.g. atmos" value="atmos">
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+                        Enter the name <em>without</em> the .wav extension or .zip extension (usually they share the
+                        same name).
+                    </p>
+                </div>
+
+                <!-- 1. Mkdir -->
+                <p style="margin-bottom: var(--space-sm); font-weight: 600;">1. Create Folders</p>
+                <div class="code-block-wrapper" style="margin-top: 0; margin-bottom: var(--space-md);">
+                    <button class="copy-btn" data-target="cmd-mkdir">
+                        <span class="material-icons" style="font-size: 16px;">content_copy</span> Copy
+                    </button>
+                    <div class="code-block">
+                        <pre
+                            id="cmd-mkdir">mkdir -p ~/.config/pipewire/filter-chain.conf.d ~/.config/pipewire/hrtf</pre>
+                    </div>
+                </div>
+
+                <!-- 2. Unzip -->
+                <p style="margin-bottom: var(--space-sm); font-weight: 600;">2. Unzip HRTF</p>
+                <div class="code-block-wrapper" style="margin-top: 0; margin-bottom: var(--space-md);">
+                    <button class="copy-btn" data-target="cmd-unzip">
+                        <span class="material-icons" style="font-size: 16px;">content_copy</span> Copy
+                    </button>
+                    <div class="code-block">
+                        <pre id="cmd-unzip">unzip <span class="name-highlight">atmos</span>.zip</pre>
+                    </div>
+                </div>
+
+                <!-- 3. Move -->
+                <p style="margin-bottom: var(--space-sm); font-weight: 600;">3. Move WAV File</p>
+                <div class="code-block-wrapper" style="margin-top: 0; margin-bottom: var(--space-md);">
+                    <button class="copy-btn" data-target="cmd-mv">
+                        <span class="material-icons" style="font-size: 16px;">content_copy</span> Copy
+                    </button>
+                    <div class="code-block">
+                        <pre
+                            id="cmd-mv">mv <span class="name-highlight">atmos</span>/<span class="name-highlight">atmos</span>.wav ~/.config/pipewire/hrtf/</pre>
+                    </div>
+                </div>
+
+                <!-- 4. Wget Config -->
+                <p style="margin-bottom: var(--space-sm); font-weight: 600;">4. Download Config</p>
+                <div class="code-block-wrapper" style="margin-top: 0;">
+                    <button class="copy-btn" data-target="cmd-wget-config">
+                        <span class="material-icons" style="font-size: 16px;">content_copy</span> Copy
+                    </button>
+                    <div class="code-block">
+                        <pre
+                            id="cmd-wget-config">wget https://gitlab.freedesktop.org/pipewire/pipewire/-/raw/master/src/daemon/filter-chain/sink-virtual-surround-7.1-hesuvi.conf -O ~/.config/pipewire/filter-chain.conf.d/99-virtual-surround.conf</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h2>Apply Configuration</h2>
+                <p>We need to update the config file to point to your specific HRTF wav file used above.</p>
+
+                <div class="code-block-wrapper">
+                    <button class="copy-btn" data-target="cmd-sed">
+                        <span class="material-icons" style="font-size: 16px;">content_copy</span> Copy
+                    </button>
+                    <div class="code-block">
+                        <pre id="cmd-sed">sed -i ...</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="step-card">
+                <div class="step-number">4</div>
+                <h2>Restart Services</h2>
+                <p>Restart the PipeWire user services to apply changes.</p>
+
+                <div class="code-block-wrapper">
+                    <div class="distro-tabs">
+                        <button class="tab-btn" data-distro="debian">Debian / Ubuntu</button>
+                        <button class="tab-btn" data-distro="fedora">Fedora</button>
+                        <button class="tab-btn" data-distro="arch">Arch</button>
+                    </div>
+
+                    <button class="copy-btn" data-target="cmd-restart">
+                        <span class="material-icons" style="font-size: 16px;">content_copy</span> Copy
+                    </button>
+                    <div class="code-block">
+                        <pre id="cmd-restart">systemctl --user restart ...</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5 (Complete) -->
+            <div class="step-card" style="border-color: var(--accent); background: rgba(16, 185, 129, 0.05);">
+                <div class="step-number" style="color: rgba(16, 185, 129, 0.1);">5</div>
+                <h2 style="color: var(--accent);">Setup Complete!</h2>
+                <p>Your virtual surround sound should now be active.</p>
+
+                <div
+                    style="margin-top: var(--space-md); padding: var(--space-md); background: #ffffff; border-radius: var(--radius-md); border: 1px solid rgba(16, 185, 129, 0.2);">
+                    <p style="margin-bottom: var(--space-sm);"><strong>Final Step:</strong></p>
+                    <p>Open your system sound settings (or your specific game/player settings) and ensure the output
+                        device is set to:</p>
+                    <div
+                        style="margin-top: var(--space-sm); font-size: 1.2rem; font-weight: 700; color: var(--text-main);">
+                        <span class="material-icons"
+                            style="vertical-align: middle; margin-right: 8px; color: var(--accent);">headphones</span>
+                        Virtual Surround Sink
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <footer>
+            <p>Disclaimer: JavaScript and CSS were generated using Google Gemini and Antigravity.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
